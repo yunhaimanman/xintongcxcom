@@ -1,17 +1,20 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
-import { AuthContext } from '@/contexts/authContext';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+ import { useState, useContext } from 'react';
+ import { useNavigate, useSearchParams } from 'react-router-dom';
+ import { toast } from 'sonner';
+ import { motion } from 'framer-motion';
+ import { AuthContext } from '@/contexts/authContext';
+ import { validateMakerLogin } from '@/data/makers';
+ import Header from '@/components/Header';
+ import Footer from '@/components/Footer';
+ 
 
-export default function Login() {
-  const navigate = useNavigate();
-  const { setIsAuthenticated } = useContext(AuthContext);
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
+ export default function Login() {
+   const navigate = useNavigate();
+   const { setIsAuthenticated } = useContext(AuthContext);
+   const [searchParams] = useSearchParams();
+   const [formData, setFormData] = useState({
+     username: '',
+     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -33,16 +36,31 @@ export default function Login() {
     
     setIsLoading(true);
     
-    // 模拟API请求延迟
-    setTimeout(() => {
-      // 硬编码的管理员账号密码验证
-      if (formData.username === 'admin' && formData.password === 'admin') {
-        setIsAuthenticated(true);
-        toast.success('登录成功，欢迎回来！');
-        navigate('/tool-management');
-      } else {
-        setError('用户名或密码不正确');
-      }
+     // 模拟API请求延迟
+     setTimeout(() => {
+       // 判断是管理员登录还是创客登录
+       const loginType = searchParams.get('type');
+       
+       if (loginType === 'maker') {
+         // 创客登录逻辑
+         const maker = validateMakerLogin(formData.username, formData.password);
+         if (maker) {
+           setIsAuthenticated(true, formData.username, 'maker');
+           toast.success('创客登录成功！');
+           navigate('/maker');
+         } else {
+           setError('用户名或密码不正确');
+         }
+       } else {
+         // 管理员登录逻辑
+         if (formData.username === 'admin' && formData.password === 'admin') {
+           setIsAuthenticated(true, formData.username, 'admin');
+           toast.success('管理员登录成功，欢迎回来！');
+           navigate('/tool-management');
+         } else {
+           setError('用户名或密码不正确');
+         }
+       }
       setIsLoading(false);
     }, 800);
   };
@@ -61,9 +79,9 @@ export default function Login() {
           >
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white text-center">
-                <h2 className="text-2xl font-bold mb-1">管理员登录</h2>
-                <p className="opacity-90">请输入管理员账号密码</p>
-              </div>
+               <h2 className="text-2xl font-bold mb-1">{searchParams.get('type') === 'maker' ? '创客登录' : '管理员登录'}</h2>
+               <p className="opacity-90">{searchParams.get('type') === 'maker' ? '请输入创客账号密码' : '请输入管理员账号密码'}</p>
+             </div>
               
               <div className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -138,8 +156,8 @@ export default function Login() {
             
             <p className="text-center text-gray-500 dark:text-gray-400 text-sm mt-4">
               <i className="fa-solid fa-info-circle mr-1"></i>
-              只有管理员可以访问工具管理页面
-            </p>
+               {searchParams.get('type') === 'maker' ? '只有授权的创客可以登录' : '只有管理员可以访问工具管理页面'}
+             </p>
           </motion.div>
         </main>
       </div>

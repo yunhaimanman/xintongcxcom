@@ -104,7 +104,7 @@ export const deleteArticleCategory = (id: string): boolean => {
 };
 
  // 默认文章数据
- const defaultArticles: Article[] = [
+  export const defaultArticles: Article[] = [
    {
      id: '1',
      title: '欢迎使用图文管理系统',
@@ -150,35 +150,61 @@ export const deleteArticleCategory = (id: string): boolean => {
      createdAt: new Date('2025-07-20'),
      updatedAt: new Date('2025-07-20')
      },
-    {
-      id: '6',
-      title: '网站公告',
-      content: '本次风格设计已完成优化，新增多种视觉风格供选择。网站所有功能已更新，数据存储在本地浏览器中，无需服务器支持即可使用。感谢您的使用与支持！',
-      categoryId: 'website',
-      imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=website+announcement+notification&sign=39b1f2ab0e5e17e4865b29677ec6c92f',
-      createdAt: new Date('2025-08-02'),
-      updatedAt: new Date('2025-08-02')
-    }
+     {
+       id: '6',
+       title: '网站公告',
+       content: '本次风格设计已完成优化，新增多种视觉风格供选择。网站所有功能已更新，数据存储在本地浏览器中，无需服务器支持即可使用。感谢您的使用与支持！',
+       categoryId: 'website',
+       imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=website+announcement+notification&sign=39b1f2ab0e5e17e4865b29677ec6c92f',
+       createdAt: new Date('2025-08-02'),
+       updatedAt: new Date('2025-08-02')
+     },
+       {
+         id: '7',
+         title: '更新记录',
+         content: '网站全部需求清单与更新记录：\n\n### 2025年8月3日 更新\n\n#### 数据库管理模块\n- 实现独立的数据库管理模块，仅限管理员访问\n- 添加数据表结构可视化功能\n- 实现数据表的增删改查操作\n- 增加数据导入/导出功能，支持JSON格式备份\n\n#### 图文管理功能\n- 完善文章分类管理系统\n- 新增网站介绍模块\n- 添加"更新记录"文章，记录网站开发历程\n- 优化文章展示页面布局\n\n### 2025年7月20日 更新\n\n#### 工具管理功能\n- 添加、编辑和删除工具\n- 工具分类管理\n- 工具数据导出为XML格式\n- 工具数据从XML导入\n\n#### 资源管理功能\n- 资源添加、编辑和删除\n- 资源分类管理\n- 云盘链接管理\n\n### 2025年7月10日 更新\n\n#### 用户认证功能\n- 管理员登录/注销\n- 权限控制\n- 后台操作日志\n\n#### 样式管理功能\n- 多风格切换\n- 主题定制\n- 自定义颜色方案\n\n### 2025年7月1日 更新\n\n#### 留言板功能\n- 留言发布与删除\n- 管理员回复功能\n- 留言审核机制\n\n#### 其他功能\n- 响应式设计适配\n- 本地数据存储优化\n- 网站公告系统\n- 性能优化与bug修复',
+         categoryId: 'website',
+         imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=website+update+history+documentation&sign=3fe323f01ed3f3a9845c74cf3bbf9087',
+         createdAt: new Date('2025-08-03'),
+         updatedAt: new Date() // 更新为当前时间确保置顶
+       }
  ];
 
 // 从localStorage获取所有文章
 export const getArticles = (): Article[] => {
   const articlesJson = localStorage.getItem('articles');
-  if (!articlesJson) return defaultArticles;
+  let articles: Article[] = [];
   
   try {
-    const articles = JSON.parse(articlesJson) as Article[];
-    // 将字符串日期转换为Date对象
-    return articles.map(article => ({
-      ...article,
-      createdAt: new Date(article.createdAt),
-      updatedAt: new Date(article.updatedAt)
-    }));
+    if (articlesJson) {
+      articles = JSON.parse(articlesJson) as Article[];
+      // 将字符串日期转换为Date对象
+      articles = articles.map(article => ({
+        ...article,
+        createdAt: new Date(article.createdAt),
+        updatedAt: new Date(article.updatedAt)
+      }));
+      
+      // 确保"更新记录"文章存在
+      const updateRecordExists = articles.some(article => article.id === '7');
+      if (!updateRecordExists) {
+        // 从默认文章中找到"更新记录"文章并添加
+        const updateRecordArticle = defaultArticles.find(a => a.id === '7');
+        if (updateRecordArticle) {
+          articles.push(updateRecordArticle);
+          localStorage.setItem('articles', JSON.stringify(articles));
+        }
+      }
+    } else {
+      articles = defaultArticles;
+    }
   } catch (error) {
     console.error('Failed to parse articles:', error);
-    return defaultArticles;
+    articles = defaultArticles;
   }
-};
+  
+  return articles;
+}
 
 // 添加新文章
 export const addArticle = (article: Omit<Article, 'id' | 'createdAt' | 'updatedAt'>): Article => {

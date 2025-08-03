@@ -31,6 +31,15 @@ export default function Home() {
     <p className="text-sm text-blue-600 dark:text-blue-400">
       本次风格设计已完成优化，新增多种视觉风格供选择。网站所有功能已更新，数据存储在本地浏览器中，无需服务器支持即可使用。感谢您的使用与支持！
     </p>
+    <div className="mt-4">
+      <a 
+        href="/article/7" 
+        className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        <i className="fa-solid fa-history mr-2"></i>
+        查看更新记录
+      </a>
+    </div>
   </div>
           
            {/* 部署指南内容已移除 */}

@@ -32,9 +32,25 @@ export default function Blog() {
       setLoading(true);
       try {
         if (selectedCategory === 'all') {
-          setArticles(getArticles().sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()));
+          // 获取所有文章并排序
+          const allArticles = getArticles();
+          // 查找更新记录文章
+          const updateRecordArticle = allArticles.find(a => a.id === '7');
+          // 其他文章按时间排序
+          const otherArticles = allArticles.filter(a => a.id !== '7').sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+          // 如果找到更新记录文章，将其放在最前面
+          const sortedArticles = updateRecordArticle ? [updateRecordArticle, ...otherArticles] : otherArticles;
+          setArticles(sortedArticles);
         } else {
-          setArticles(getArticlesByCategory(selectedCategory).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()));
+          // 获取分类文章并排序
+          const categoryArticles = getArticlesByCategory(selectedCategory);
+          // 查找更新记录文章
+          const updateRecordArticle = categoryArticles.find(a => a.id === '7');
+          // 其他文章按时间排序
+          const otherArticles = categoryArticles.filter(a => a.id !== '7').sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+          // 如果找到更新记录文章，将其放在最前面
+          const sortedArticles = updateRecordArticle ? [updateRecordArticle, ...otherArticles] : otherArticles;
+          setArticles(sortedArticles);
         }
       } catch (error) {
         console.error('Failed to load articles:', error);
@@ -164,9 +180,15 @@ export default function Blog() {
                             <time className="text-xs text-gray-500 dark:text-gray-400">
                               {formatDate(article.updatedAt)}
                             </time>
-                          </div>
-                          
-                          <h3 className="text-xl font-bold mb-2 hover:text-blue-500 transition-colors">
+                   </div>
+                   
+                   {article.id === '7' && (
+                     <div className="mt-2 inline-block px-3 py-1 bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-300 rounded-full text-xs font-medium">
+                       <i className="fa-solid fa-pinned mr-1"></i>置顶
+                     </div>
+                   )}
+                   
+                   <h3 className="text-xl font-bold mb-2 hover:text-blue-500 transition-colors">
                             <Link to={`/article/${article.id}`}>
                               {article.title}
                             </Link>

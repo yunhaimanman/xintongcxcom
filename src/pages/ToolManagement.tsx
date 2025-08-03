@@ -317,6 +317,8 @@ export default function ToolManagement() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [categories, setCategories] = useState<Category[]>(getCategories());
   const [selectedIcon, setSelectedIcon] = useState<string>(categoryFormData.icon);
+  const [exportedXml, setExportedXml] = useState('');
+  const [showXmlModal, setShowXmlModal] = useState(false);
   
   // 可用图标列表
   const availableIcons = [
@@ -531,10 +533,202 @@ export default function ToolManagement() {
     } catch (err) {
       console.error('Failed to delete tool:', err);
       toast.error('删除工具失败，请重试');
+     }
+   };
+
+   // 导出工具数据为XML
+  const [isExporting, setIsExporting] = useState(false);
+  
+  // XML模板说明：系统使用以下结构导出工具数据
+  // <?xml version="1.0" encoding="UTF-8"?>
+  // <tools>
+  //   <tool>
+  //     <id>工具ID</id>
+  //     <name>工具名称</name>
+  //     <description>工具描述</description>
+  //     <icon>工具图标类名</icon>
+  //     <category>工具分类ID</category>
+  //     <color>工具颜色类名</color>
+  //     <url>工具网址</url>
+  //   </tool>
+  // </tools>
+  const handleExportTools = async () => {
+    // 防止重复点击
+    if (isExporting) return;
+    
+    setIsExporting(true);
+    toast.info('正在准备导出数据...');
+    
+    try {
+      // 获取所有工具数据
+      const allTools = getTools();
+      
+      // 检查是否有工具数据
+      if (allTools.length === 0) {
+        toast.warning('检测到空白数据：没有可导出的工具数据');
+        setIsExporting(false);
+        return;
+      }
+      
+      // 转换为XML格式
+      let xmlContent = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      xmlContent += '<tools>\n';
+      
+      allTools.forEach(tool => {
+        // 检查工具是否有基本必要字段
+        if (!tool.name || !tool.url) {
+          toast.warning(`工具"${tool.name || '未命名工具'}"缺少必要信息，已跳过导出`);
+          return;
+        }
+        
+        xmlContent += '  <tool>\n';
+        xmlContent += `    <id>${escapeXml(tool.id)}</id>\n`;
+        xmlContent += `    <name>${escapeXml(tool.name)}</name>\n`;
+        xmlContent += `    <description>${escapeXml(tool.description || '')}</description>\n`;
+        xmlContent += `    <icon>${escapeXml(tool.icon)}</icon>\n`;
+        xmlContent += `    <category>${escapeXml(tool.category)}</category>\n`;
+        xmlContent += `    <color>${escapeXml(tool.color)}</color>\n`;
+        xmlContent += `    <url>${escapeXml(tool.url)}</url>\n`;
+        xmlContent += '  </tool>\n';
+      });
+      
+      xmlContent += '</tools>';
+      
+      // 验证XML内容 - 降低长度要求以允许少量数据导出
+      if (!xmlContent || xmlContent.length < 50) {
+        throw new Error('生成的XML内容为空或不完整');
+      }
+      
+      // 保存XML内容到状态并显示模态框
+      setExportedXml(xmlContent);
+      setShowXmlModal(true);
+      
+      // 创建下载链接
+      const blob = new Blob([xmlContent], { type: 'application/xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      
+      // 生成带时间戳的文件名
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const fileName = `tools_export_${timestamp}.xml`;
+      a.download = fileName;
+      
+      // 添加到文档并触发下载
+      document.body.appendChild(a);
+      
+      // 使用requestAnimationFrame确保DOM已更新
+      requestAnimationFrame(() => {
+        a.click();
+        
+        // 立即清理，现代浏览器不需要长时间等待
+        setTimeout(() => {
+          try {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // 显示成功消息，包含导出的工具数量
+            toast.success(`工具数据导出成功！共导出 ${allTools.length} 个工具\n文件: ${fileName}`);
+          } catch (cleanupError) {
+            console.error('清理下载资源失败:', cleanupError);
+            toast.error('下载完成但清理资源时出错');
+          } finally {
+            setIsExporting(false);
+          }
+        }, 1000);
+      });
+      
+    } catch (error) {
+      console.error('导出失败详情:', error);
+      
+      // 更具体的错误消息
+      let errorMessage = '工具数据导出失败';
+      if (error instanceof Error) {
+        errorMessage += `: ${error.message}`;
+      }
+      
+      toast.error(errorMessage);
+      
+      // 提供故障排除建议
+      setTimeout(() => {
+        toast.info('请检查是否有可用的工具数据或尝试刷新页面后重试');
+      }, 3000);
+      setIsExporting(false);
     }
   };
 
-  return (
+  // 导入工具数据
+  const handleImportTools = async () => {
+    try {
+      // 创建文件选择器
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.xml';
+      
+      input.onchange = async (e: any) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        try {
+          // 读取文件内容
+          const content = await file.text();
+          
+          // 解析XML
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(content, 'text/xml');
+          
+          // 验证XML格式
+          const toolElements = xmlDoc.getElementsByTagName('tool');
+          if (toolElements.length === 0) {
+            toast.error('无效的XML文件格式，未找到工具数据');
+            return;
+          }
+          
+          // 清空现有工具数据
+          localStorage.removeItem('tools');
+          
+          // 导入工具数据
+          Array.from(toolElements).forEach((toolElement: any) => {
+            const toolData = {
+              name: toolElement.getElementsByTagName('name')[0]?.textContent || '',
+              description: toolElement.getElementsByTagName('description')[0]?.textContent || '',
+              category: toolElement.getElementsByTagName('category')[0]?.textContent || toolCategories[0].id,
+              url: toolElement.getElementsByTagName('url')[0]?.textContent || ''
+            };
+            
+            if (toolData.name && toolData.url) {
+              addTool(toolData);
+            }
+          });
+          
+          // 刷新工具列表
+          setTools(getTools());
+          toast.success(`成功导入 ${toolElements.length} 个工具数据！`);
+        } catch (error) {
+          console.error('Failed to import tools:', error);
+          toast.error('导入失败，请检查XML文件格式');
+        }
+      };
+      
+      input.click();
+    } catch (error) {
+      console.error('Failed to open file picker:', error);
+      toast.error('无法打开文件选择器，请重试');
+    }
+  };
+  
+  // XML特殊字符转义
+  const escapeXml = (text: string): string => {
+    if (!text) return '';
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
+   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col">
       <div className="container mx-auto px-4 py-6">
         <Header />
@@ -669,10 +863,38 @@ export default function ToolManagement() {
               
               {/* 现有工具列表 */}
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-10">
-                <h3 className="text-xl font-semibold mb-6 flex items-center">
-                  <i className="fa-solid fa-list-ul mr-2"></i>
-                  现有工具 ({tools.length})
-                </h3>
+                 <div className="flex justify-between items-center mb-6">
+                   <h3 className="text-xl font-semibold flex items-center">
+                     <i className="fa-solid fa-list-ul mr-2"></i>
+                     现有工具 ({tools.length})
+                   </h3>
+                     <div className="flex space-x-3">
+                       <button
+                         onClick={handleExportTools}
+                         disabled={isExporting}
+                         className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center disabled:bg-green-400 disabled:cursor-not-allowed"
+                       >
+                         {isExporting ? (
+                           <>
+                             <i className="fa-solid fa-spinner fa-spin mr-2"></i>
+                             导出中...
+                           </>
+                         ) : (
+                           <>
+                             <i className="fa-solid fa-download mr-2"></i>
+                             导出XML
+                           </>
+                         )}
+                       </button>
+                      <button
+                        onClick={handleImportTools}
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center"
+                      >
+                        <i className="fa-solid fa-upload mr-2"></i>
+                        导入XML
+                      </button>
+                    </div>
+                 </div>
                 
                 {tools.length === 0 ? (
                   <div className="text-center py-10 text-gray-500 dark:text-gray-400">

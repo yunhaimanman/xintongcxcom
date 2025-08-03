@@ -10,16 +10,19 @@ export default function Footer() {
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             © {new Date().getFullYear()} 工具导航 - 所有工具仅供参考
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="/article/3" className="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
-              <i className="fa-solid fa-question-circle mr-1"></i>帮助
-            </a>
-            <a href="/article/4" className="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
-              <i className="fa-solid fa-file-text mr-1"></i>关于我们
-            </a>
-            <a href="/article/5" className="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
-              <i className="fa-solid fa-envelope mr-1"></i>联系我们
-            </a>
+           <div className="flex flex-wrap space-x-6 mt-4 md:mt-0 gap-4">
+             <a href="/article/3" className="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+               <i className="fa-solid fa-question-circle mr-1"></i>帮助
+             </a>
+             <a href="/article/4" className="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+               <i className="fa-solid fa-file-text mr-1"></i>关于我们
+             </a>
+             <a href="/article/5" className="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+               <i className="fa-solid fa-envelope mr-1"></i>联系我们
+             </a>
+             <a href="/article/7" className="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+               <i className="fa-solid fa-history mr-1"></i>更新记录
+             </a>
           </div>
         </div>
       </div>

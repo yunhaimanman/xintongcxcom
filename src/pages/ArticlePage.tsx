@@ -6,7 +6,7 @@ import { Article, getArticles, getArticlesByCategory, getArticleCategories } fro
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useTheme } from '@/hooks/useTheme';
-import { ArticleCategory } from '@/data/articles';
+import { ArticleCategory, defaultArticles } from '@/data/articles';
 
 export default function ArticlePage() {
   const { style } = useTheme();
@@ -27,43 +27,61 @@ export default function ArticlePage() {
     }).format(date);
   };
   
-  // 获取文章内容
-  useEffect(() => {
-    if (!id) {
-      setError('无效的文章链接');
-      setLoading(false);
-      return;
-    }
+// 获取文章内容
+useEffect(() => {
+  if (!id) {
+    setError('无效的文章链接');
+    setLoading(false);
+    return;
+  }
+  
+  try {
+    // 获取所有文章和分类
+    const allArticles = getArticles();
+    const allCategories = getArticleCategories();
     
-    try {
-      // 获取所有文章和分类
-      const allArticles = getArticles();
-      const allCategories = getArticleCategories();
+    // 根据ID查找文章
+    const foundArticle = allArticles.find(art => art.id === id);
+    
+    if (foundArticle) {
+      setArticle(foundArticle);
+      setCategories(allCategories);
       
-      // 根据ID查找文章
-      const foundArticle = allArticles.find(art => art.id === id);
-      
-      if (foundArticle) {
-        setArticle(foundArticle);
-        setCategories(allCategories);
+      // 获取相关文章（同分类但不同ID）
+      const related = allArticles
+        .filter(art => art.categoryId === foundArticle.categoryId && art.id !== id)
+        .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+        .slice(0, 4);
         
-        // 获取相关文章（同分类但不同ID）
-        const related = allArticles
-          .filter(art => art.categoryId === foundArticle.categoryId && art.id !== id)
-          .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-          .slice(0, 4);
+      setRelatedArticles(related);
+    } else {
+      // 特别处理"更新记录"文章不存在的情况
+      if (id === '7') {
+        setError('更新记录文章不存在，正在尝试恢复...');
+        
+        // 尝试从默认文章中恢复
+        const defaultArticle = defaultArticles.find(a => a.id === '7');
+        if (defaultArticle) {
+          // 添加到localStorage
+          const articles = [...allArticles, defaultArticle];
+          localStorage.setItem('articles', JSON.stringify(articles));
           
-        setRelatedArticles(related);
+          // 重新加载文章
+          setArticle(defaultArticle);
+          setCategories(allCategories);
+          setError(''); // 清除错误
+        }
       } else {
         setError('未找到指定文章');
       }
-    } catch (err) {
-      console.error('Failed to fetch article:', err);
-      setError('获取文章失败，请重试');
-    } finally {
-      setLoading(false);
     }
-  }, [id]);
+  } catch (err) {
+    console.error('Failed to fetch article:', err);
+    setError('获取文章失败，请重试');
+  } finally {
+    setLoading(false);
+  }
+}, [id]);
   
   if (loading) {
     return (
