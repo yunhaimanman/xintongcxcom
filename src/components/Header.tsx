@@ -139,7 +139,7 @@ export default function Header() {
                     </>
                    ) : (
                      <li>
-                        <a href="/login" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
+                        <a href="/login?type=admin" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
                           <i className="fa-solid fa-user-circle mr-1"></i>
                           登录
                         </a>
