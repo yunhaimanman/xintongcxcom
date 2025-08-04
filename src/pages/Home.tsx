@@ -1,8 +1,9 @@
 import { getCategories, getTools, toolCategories } from '@/data/tools';
-import ToolCategory from '@/components/ToolCategory';
+
 import SearchBar from '@/components/SearchBar';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ToolCategory from '@/components/ToolCategory';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useTheme } from '@/hooks/useTheme';

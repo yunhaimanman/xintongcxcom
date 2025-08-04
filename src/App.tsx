@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import Home from "@/pages/Home";
 import MessageBoard from "@/pages/MessageBoard";
-import ToolManagement from "@/pages/ToolManagement";
+
 import Login from "@/pages/Login";
 import Blog from "@/pages/Blog";
 import Resources from "@/pages/Resources";
@@ -42,14 +42,7 @@ export default function App() {
          <Route path="/" element={<Home />} />
          <Route path="/message-board" element={<MessageBoard />} />
          <Route path="/login" element={<Login />} />
-         <Route 
-           path="/tool-management" 
-           element={
-             <ProtectedRoute>
-               <ToolManagement />
-             </ProtectedRoute>
-           } 
-         />
+
          <Route 
            path="/article-management" 
            element={

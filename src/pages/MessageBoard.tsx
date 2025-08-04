@@ -210,8 +210,12 @@ const formatDate = (date: Date | string) => {
                     <i className="fa-solid fa-info-circle mr-2"></i>
                     功能说明
                   </h3>
-                  <p className="text-sm text-blue-600 dark:text-blue-400">
-                    所有用户可以查看留言，管理员可以回复和删除留言。留言存储在浏览器本地，刷新页面后不会丢失。
+                  <p className="text-sm text-blue-600 dark:text-blue-400 mb-3">
+                    所有用户可以查看留言，管理员可以回复和删除留言。
+                  </p>
+                  <p className="text-sm text-amber-600 dark:text-amber-400 flex items-start">
+                    <i className="fa-solid fa-server mr-2 mt-0.5"></i>
+                    <span>当前演示环境使用本地存储模拟服务器功能，所有留言对所有访问者可见。在生产环境中，将使用后端数据库确保数据持久化和多用户共享。</span>
                   </p>
                 </div>
                

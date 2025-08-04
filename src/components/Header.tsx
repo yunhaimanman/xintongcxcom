@@ -20,7 +20,7 @@ export default function Header() {
              <h1 className={`text-3xl font-bold ${style.variables.primaryTextColor}`}>
                小桐导航
              </h1>
-            <p className={`mt-1 ${style.variables.textColor}`}>发现实用的在线工具</p>
+            <p className={`mt-1 ${style.variables.textColor}`}>我们一直在路上</p>
           </motion.div>
           
             <nav className="hidden md:block">
@@ -49,12 +49,12 @@ export default function Header() {
                        留言
                      </a>
                    </li>
-                   <li>
-                     <a href="/maker" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
-                       <i className="fa-solid fa-lightbulb mr-1"></i>
-                       创客空间
-                     </a>
-                   </li>
+                    <li>
+                       <a href="/maker" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
+                         <i className="fa-solid fa-lightbulb mr-1"></i>
+                         创客
+                      </a>
+                    </li>
                   {isAuthenticated ? (
                     <>
                       {/* 仅管理员显示管理菜单 */}
@@ -62,7 +62,7 @@ export default function Header() {
                         <li className="relative group">
                           <button className="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                             <i className="fa-solid fa-cog mr-1"></i>
-                            管理
+                       控制台
                             <i className="fa-solid fa-chevron-down ml-1 text-xs transition-transform group-hover:rotate-180"></i>
                           </button>
                           {/* 下拉菜单内容 */}
@@ -139,7 +139,7 @@ export default function Header() {
                     </>
                    ) : (
                      <li>
-                        <a href="/login?type=admin" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
+                        <a href="/login" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
                           <i className="fa-solid fa-user-circle mr-1"></i>
                           登录
                         </a>
@@ -161,34 +161,37 @@ export default function Header() {
                )}
              </button>
              
-              <a 
-                 href="/" 
-                 className="md:hidden p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                 aria-label="首页"
-               >
-                 <i className="fa-solid fa-home"></i>
-               </a>
-                <a 
-                  href="/blog" 
-                  className="md:hidden p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                  aria-label="博客"
-                >
-                  <i className="fa-solid fa-blog"></i>
-                </a>
-                <a 
-                  href="/resources" 
-                  className="md:hidden p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                  aria-label="资料"
-                >
-                  <i className="fa-solid fa-database"></i>
-                </a>
-             <a 
-               href="/message-board" 
-               className="md:hidden p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-               aria-label="留言板"
-             >
-               <i className="fa-solid fa-comments"></i>
-             </a>
+               <nav className="md:hidden flex justify-around w-full">
+                 <a 
+                   href="/" 
+                   className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                   aria-label="首页"
+                 >
+                   <i className="fa-solid fa-home text-sm"></i>
+                 </a>
+                 <a 
+                   href="/blog" 
+                   className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                   aria-label="博客"
+                 >
+                   <i className="fa-solid fa-blog text-sm"></i>
+                 </a>
+                 <a 
+                   href="/resources" 
+                   className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                   aria-label="资料"
+                 >
+                   <i className="fa-solid fa-database text-sm"></i>
+                 </a>
+                 <a 
+                   href="/maker" 
+                   className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                   aria-label="创客"
+                 >
+                   <i className="fa-solid fa-lightbulb text-sm"></i>
+                 </a>
+               </nav>
+
            </div>
 
          </div>

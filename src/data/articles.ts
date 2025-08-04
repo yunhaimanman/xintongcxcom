@@ -166,9 +166,81 @@ export const deleteArticleCategory = (id: string): boolean => {
          categoryId: 'website',
          imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=website+update+history+documentation&sign=3fe323f01ed3f3a9845c74cf3bbf9087',
          createdAt: new Date('2025-08-03'),
-         updatedAt: new Date() // 更新为当前时间确保置顶
-       }
- ];
+        updatedAt: new Date() // 更新为当前时间确保置顶
+      },
+       {
+         id: '8',
+         title: '创业初期如何寻找天使投资',
+         content: '创业初期寻找天使投资是许多创业者面临的挑战。本文分享了如何准备商业计划书、寻找合适的投资人以及成功融资的关键技巧。天使投资人不仅能提供资金支持，还能带来宝贵的行业经验和人脉资源。',
+         categoryId: 'news',
+         imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=startup+investment+angel+funding&sign=6a91e8ffac67a3ecfaeb985fc1d823b7',
+         createdAt: new Date('2025-08-05'),
+         updatedAt: new Date('2025-08-05')
+       },
+       {
+         id: '11',
+         title: '兼职创业者的时间管理策略',
+         content: '兼职创业最大的挑战之一就是时间管理。本文分享了高效时间管理的五个实用技巧，包括如何设定明确目标、优先级排序、利用碎片时间、建立固定工作习惯以及学会委派任务。这些策略能帮助兼职创业者在有限时间内实现创业目标，同时不影响全职工作表现。',
+         categoryId: 'news',
+         imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=part-time+entrepreneur+time+management&sign=bb2a1a4c0da042b103733426b68d39ad',
+         createdAt: new Date('2025-08-07'),
+         updatedAt: new Date('2025-08-07')
+       },
+       {
+         id: '12',
+         title: '5个低风险兼职创业项目推荐',
+         content: '对于想要低风险尝试创业的人来说，选择合适的项目至关重要。本文推荐了五个适合兼职创业的项目，包括：内容创作与自媒体运营、电商代购与分销、线上教育与技能培训、小型手工艺品制作与销售，以及专业咨询服务。每个项目都分析了启动成本、所需技能和潜在收益，帮助读者找到适合自己的创业方向。',
+         categoryId: 'news',
+         imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=low-risk+part-time+business+ideas&sign=31b6b2c0a1baf57ef4ceac3902d1286d',
+         createdAt: new Date('2025-08-08'),
+         updatedAt: new Date('2025-08-08')
+       },
+       {
+         id: '13',
+         title: '兼职创业如何平衡全职工作与副业',
+         content: '兼顾全职工作和兼职创业需要精心规划和高效执行。本文探讨了如何在不影响主业的前提下发展副业，包括如何设定合理预期、与雇主保持透明沟通、建立支持系统、保持身心健康以及设定明确边界。文章还提供了识别倦怠信号的方法和防止精力过度分散的实用建议，帮助兼职创业者实现可持续发展。',
+         categoryId: 'news',
+         imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=balance+full-time+job+and+side+business&sign=5c63984e47052837ad106df7f9b5c5fd',
+         createdAt: new Date('2025-08-09'),
+         updatedAt: new Date('2025-08-09')
+       },
+       {
+         id: '9',
+        title: '精益创业：用最小可行产品验证商业模式',
+        content: '精益创业理念强调通过快速迭代和用户反馈来优化产品。本文详细介绍了如何构建最小可行产品(MVP)，如何设计有效的用户测试，以及如何根据反馈调整商业模式。这种方法可以帮助创业者在投入大量资源前验证想法，降低失败风险。',
+        categoryId: 'tutorial',
+        imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=lean+startup+mvp+business+model&sign=edd99737fa03bac5d1e58e326cb1286d',
+        createdAt: new Date('2025-08-06'),
+        updatedAt: new Date('2025-08-06')
+      },
+      {
+        id: '10',
+        title: '创业者必备的5项核心能力',
+        content: '成功的创业者往往具备一些共同的核心能力。本文深入探讨了包括问题解决能力、领导力、沟通能力、适应能力和财务敏感度在内的关键素质，并提供了培养这些能力的实用建议。无论是技术背景还是商业背景的创业者，这些能力都是打造成功企业的基础。',
+        categoryId: 'review',
+        imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=entrepreneur+skills+business+abilities&sign=dc4b751c83751c88c837878186d19feb',
+        createdAt: new Date('2025-08-07'),
+        updatedAt: new Date('2025-08-07')
+        },
+        {
+          id: '14',
+          title: '2024年大学生创新创业训练计划项目申报指南',
+          content: '为深入贯彻落实《国务院办公厅关于深化高等学校创新创业教育改革的实施意见》，进一步提升大学生创新创业能力，现就2024年大学生创新创业训练计划项目申报工作通知如下：\n\n一、申报对象\n全国普通高等学校全日制本专科生均可申报，鼓励跨学科、跨专业、跨年级组队申报。团队成员一般不超过5人，每个项目配备1-2名指导教师。\n\n二、项目类型\n1. 创新训练项目：面向本科生个人或团队，在导师指导下，自主完成创新性研究项目设计、研究条件准备和项目实施、研究报告撰写等工作。\n2. 创业训练项目：面向本科生团队，在导师指导下，团队中每个学生在项目实施过程中扮演一个或多个具体角色，通过编制商业计划书、开展可行性研究、模拟企业运行等工作。\n3. 创业实践项目：是学生团队在学校导师和企业导师共同指导下，采用前期创新训练项目（或创新性实验）的成果，提出具有市场前景的创新性产品或服务，以此为基础开展创业实践活动。\n\n三、申报流程\n1. 项目申报：3月1日-3月31日\n2. 学校评审：4月1日-4月15日\n3. 省级推荐：4月16日-4月30日\n4. 国家级评审：5月\n\n四、注意事项\n1. 项目选题应具有一定的学术价值、创新性和现实意义\n2. 鼓励学生结合学科专业特点和地方经济社会发展需求选题\n3. 申报材料需完整、规范，按时提交',
+          categoryId: 'news',
+          imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=college+student+innovation+entrepreneurship+program+application+guide&sign=fc259b721a69aaa38163414b62d15d1e',
+          createdAt: new Date('2025-08-10'),
+          updatedAt: new Date('2025-08-10')
+         },
+         {
+           id: '15',
+           title: '百度百家号文章',
+           content: '这是从百度百家号添加的文章内容。原文链接：https://baijiahao.baidu.com/s?id=1784541751711303467',
+           categoryId: 'news',
+           imageUrl: 'https://space.coze.cn/api/coze_space/gen_image?image_size=square&prompt=news+article+image&sign=24947fdc1cbfa66032c94cff9af85c64',
+           createdAt: new Date('2025-08-11'),
+           updatedAt: new Date('2025-08-11')
+         }
+  ];
 
 // 从localStorage获取所有文章
 export const getArticles = (): Article[] => {
@@ -185,15 +257,29 @@ export const getArticles = (): Article[] => {
         updatedAt: new Date(article.updatedAt)
       }));
       
-      // 确保"更新记录"文章存在
-      const updateRecordExists = articles.some(article => article.id === '7');
-      if (!updateRecordExists) {
-        // 从默认文章中找到"更新记录"文章并添加
-        const updateRecordArticle = defaultArticles.find(a => a.id === '7');
-        if (updateRecordArticle) {
-          articles.push(updateRecordArticle);
-          localStorage.setItem('articles', JSON.stringify(articles));
-        }
+  // 确保关键文章存在
+  const requiredArticleIds = ['7', '15']; // 更新记录和百度百家号文章
+  requiredArticleIds.forEach(id => {
+    const articleExists = articles.some(article => article.id === id);
+    if (!articleExists) {
+      const requiredArticle = defaultArticles.find(a => a.id === id);
+      if (requiredArticle) {
+        articles.push(requiredArticle);
+        localStorage.setItem('articles', JSON.stringify(articles));
+      }
+    }
+  });
+      
+      // 如果没有文章数据，使用默认文章
+      if (articles.length === 0) {
+        articles = defaultArticles;
+        localStorage.setItem('articles', JSON.stringify(articles));
+      }
+      
+      // 如果没有文章数据，使用默认文章
+      if (articles.length === 0) {
+        articles = defaultArticles;
+        localStorage.setItem('articles', JSON.stringify(articles));
       }
     } else {
       articles = defaultArticles;

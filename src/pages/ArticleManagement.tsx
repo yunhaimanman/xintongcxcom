@@ -425,31 +425,87 @@ export default function ArticleManagement() {
             transition={{ duration: 0.5 }}
           >
             <div className="max-w-4xl mx-auto">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-                <h2 className="text-3xl font-bold flex items-center">
-                  <i className="fa-solid fa-file-text text-blue-500 mr-3"></i>
-                  文章管理
-                </h2>
-                <div className="flex gap-3 w-full sm:w-auto">
-                  <button
-                    onClick={() => {
-                      setSelectedArticle(null);
-                      setIsEditModalOpen(true);
-                    }}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
-                  >
-                    <i className="fa-solid fa-plus mr-2"></i>
-                    添加文章
-                  </button>
-                  
-                  <button
-                    onClick={() => navigate('/article-category-management')}
-                    className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
-                  >
-                    <i className="fa-solid fa-tags mr-2"></i>
-                    分类管理
-                  </button>
-                </div>
+               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                 <h2 className="text-3xl font-bold flex items-center">
+                   <i className="fa-solid fa-file-text text-blue-500 mr-3"></i>
+                   文章管理
+                 </h2>
+                 <div className="flex gap-3 w-full sm:w-auto flex-wrap">
+                   <button
+                     onClick={() => {
+                       setSelectedArticle(null);
+                       setIsEditModalOpen(true);
+                     }}
+                     className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
+                   >
+                     <i className="fa-solid fa-plus mr-2"></i>
+                     添加文章
+                   </button>
+                   
+                   <button
+                     onClick={() => navigate('/article-category-management')}
+                     className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
+                   >
+                     <i className="fa-solid fa-tags mr-2"></i>
+                     分类管理
+                   </button>
+                   
+                   {/* 数据导入按钮 */}
+                   <button
+                     onClick={() => {
+                       // 实现导入功能
+                       const input = document.createElement('input');
+                       input.type = 'file';
+                       input.accept = '.json';
+                       input.onchange = (e: any) => {
+                         const file = e.target.files[0];
+                         if (file) {
+                           const reader = new FileReader();
+                           reader.onload = (event) => {
+                             try {
+                               const articles = JSON.parse(event.target?.result as string);
+                               // 保存导入的文章数据
+                               localStorage.setItem('articles', JSON.stringify(articles));
+                               toast.success('文章数据导入成功！');
+                               loadArticles();
+                             } catch (error) {
+                               toast.error('导入失败，请确保文件格式正确');
+                             }
+                           };
+                           reader.readAsText(file);
+                         }
+                       };
+                       input.click();
+                     }}
+                     className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
+                   >
+                     <i className="fa-solid fa-upload mr-2"></i>
+                     导入数据
+                   </button>
+                   
+                   {/* 数据导出按钮 */}
+                   <button
+                     onClick={() => {
+                       // 实现导出功能
+                       const articles = selectedCategory === 'all' ? getArticles() : getArticlesByCategory(selectedCategory);
+                       const jsonStr = JSON.stringify(articles, null, 2);
+                       const blob = new Blob([jsonStr], { type: 'application/json' });
+                       const url = URL.createObjectURL(blob);
+                       const a = document.createElement('a');
+                       a.href = url;
+                       a.download = `articles_${new Date().toISOString().slice(0,10)}.json`;
+                       document.body.appendChild(a);
+                       a.click();
+                       document.body.removeChild(a);
+                       URL.revokeObjectURL(url);
+                       toast.success('文章数据导出成功！');
+                     }}
+                     className="bg-purple-500 hover:bg-purple-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
+                   >
+                     <i className="fa-solid fa-download mr-2"></i>
+                     导出数据
+                   </button>
+                 </div>
               </div>
               
               {/* 分类筛选 */}
@@ -542,9 +598,10 @@ export default function ArticleManagement() {
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300">
-                                  {category?.name || '未分类'}
-                                </span>
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300">
+                      {category?.name || '未分类'}
+                       {article.id === '15' && <span className="ml-1.5 px-1.5 py-0.5 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300 rounded-full text-[10px]">重点文章</span>}
+                     </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                 {formatDate(article.updatedAt)}

@@ -16,22 +16,24 @@ export interface Message {
 }
 
 // 从localStorage获取所有留言
-export const getMessages = (): Message[] => {
-  const messagesJson = localStorage.getItem('messages');
-  if (!messagesJson) return [];
-  
-  try {
-    const messages = JSON.parse(messagesJson) as Message[];
-    // 将字符串日期转换为Date对象
-    return messages.map(msg => ({
-      ...msg,
-      timestamp: new Date(msg.timestamp)
-    }));
-  } catch (error) {
-    console.error('Failed to parse messages:', error);
-    return [];
-  }
-};
+ export const getMessages = (): Message[] => {
+   const messagesJson = localStorage.getItem('messages');
+   if (!messagesJson) return [];
+   
+   try {
+     const messages = JSON.parse(messagesJson) as Message[];
+     // 将字符串日期转换为Date对象并按时间戳排序
+     return messages
+       .map(msg => ({
+         ...msg,
+         timestamp: new Date(msg.timestamp)
+       }))
+       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+   } catch (error) {
+     console.error('Failed to parse messages:', error);
+     return [];
+   }
+ };
 
 // 添加新留言到localStorage
 export const addMessage = (message: Omit<Message, 'id' | 'timestamp'>): Message => {

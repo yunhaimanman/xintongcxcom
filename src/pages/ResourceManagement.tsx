@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ResourceItem, ResourceCategory, CloudLink, getResourceItems, getResourceCategories, addResourceItem, updateResourceItem, deleteResourceItem, addResourceLink, updateResourceLink, deleteResourceLink } from '@/data/resources';
+import { ResourceItem, ResourceCategory, CloudLink, getResourceItems, getResourceCategories, addResourceItem, updateResourceItem, deleteResourceItem, addResourceLink, updateResourceLink, deleteResourceLink, getResourcesByCategory } from '@/data/resources';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -651,31 +651,95 @@ export default function ResourceManagement() {
             transition={{ duration: 0.5 }}
           >
             <div className="max-w-4xl mx-auto">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-                <h2 className="text-3xl font-bold flex items-center">
-                  <i className="fa-solid fa-database text-blue-500 mr-3"></i>
-                  资料管理
-                </h2>
-                <div className="flex gap-3 w-full sm:w-auto">
-                  <button
-                    onClick={() => {
-                      setSelectedResource(null);
-                      setIsEditModalOpen(true);
-                    }}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
-                  >
-                    <i className="fa-solid fa-plus mr-2"></i>
-                    添加资料
-                  </button>
-                  
-                  <button
-                    onClick={() => navigate('/resource-category-management')}
-                    className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
-                  >
-                    <i className="fa-solid fa-tags mr-2"></i>
-                    分类管理
-                  </button>
-                </div>
+               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                 <h2 className="text-3xl font-bold flex items-center">
+                   <i className="fa-solid fa-database text-blue-500 mr-3"></i>
+                   资料管理
+                 </h2>
+                 <div className="flex gap-3 w-full sm:w-auto flex-wrap">
+                   <button
+                     onClick={() => {
+                       setSelectedResource(null);
+                       setIsEditModalOpen(true);
+                     }}
+                     className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
+                   >
+                     <i className="fa-solid fa-plus mr-2"></i>
+                     添加资料
+                   </button>
+                   
+                   <button
+                     onClick={() => navigate('/resource-category-management')}
+                     className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
+                   >
+                     <i className="fa-solid fa-tags mr-2"></i>
+                     分类管理
+                   </button>
+                   
+                   {/* 数据导入按钮 */}
+                   <button
+                     onClick={() => {
+                       // 实现导入功能
+                       const input = document.createElement('input');
+                       input.type = 'file';
+                       input.accept = '.json';
+                       input.onchange = (e: any) => {
+                         const file = e.target.files[0];
+                         if (file) {
+                           const reader = new FileReader();
+                           reader.onload = (event) => {
+                             try {
+                               const resources = JSON.parse(event.target?.result as string);
+                               // 保存导入的资料数据
+                               localStorage.setItem('resources', JSON.stringify(resources));
+                                toast.success('资料数据导入成功！');
+                                // 重新加载资源
+                                const loadResources = () => {
+                                  if (selectedCategory === 'all') {
+                                    setResources(getResourceItems().sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()));
+                                  } else {
+                                    setResources(getResourcesByCategory(selectedCategory).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()));
+                                  }
+                                };
+                                loadResources();
+                              } catch (error) {
+                               toast.error('导入失败，请确保文件格式正确');
+                             }
+                           };
+                           reader.readAsText(file);
+                         }
+                       };
+                       input.click();
+                     }}
+                     className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
+                   >
+                     <i className="fa-solid fa-upload mr-2"></i>
+                     导入数据
+                   </button>
+                   
+                   {/* 数据导出按钮 */}
+                   <button
+                     onClick={() => {
+                       // 实现导出功能
+                       const resources = selectedCategory === 'all' ? getResourceItems() : getResourcesByCategory(selectedCategory);
+                       const jsonStr = JSON.stringify(resources, null, 2);
+                       const blob = new Blob([jsonStr], { type: 'application/json' });
+                       const url = URL.createObjectURL(blob);
+                       const a = document.createElement('a');
+                       a.href = url;
+                       a.download = `resources_${new Date().toISOString().slice(0,10)}.json`;
+                       document.body.appendChild(a);
+                       a.click();
+                       document.body.removeChild(a);
+                       URL.revokeObjectURL(url);
+                       toast.success('资料数据导出成功！');
+                     }}
+                     className="bg-purple-500 hover:bg-purple-600 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center flex-shrink-0"
+                   >
+                     <i className="fa-solid fa-download mr-2"></i>
+                     导出数据
+                   </button>
+                 </div>
               </div>
               
               {/* 分类筛选 */}

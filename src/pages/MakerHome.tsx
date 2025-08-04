@@ -34,7 +34,7 @@ export default function MakerHome() {
             <div className="max-w-4xl mx-auto">
               {/* 创客板块头部 */}
               <div className={style.variables.sectionBg + " mb-12 text-center rounded-xl p-8"}>
-                <h1 className={style.variables.primaryTextColor + " text-4xl font-bold mb-4"}>创客空间</h1>
+          <h1 className={style.variables.primaryTextColor + " text-4xl font-bold mb-4"}>创客</h1>
                 <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-6">
                   连接创意与资源，打造创业合作平台。在这里，您可以找到志同道合的合作伙伴，共同实现创新项目。
                 </p>
